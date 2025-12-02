@@ -22,7 +22,6 @@ const art = defineCollection({
         year: z.number(),
         heroImage: z.string(),
         galleryImages: z.array(z.string()).optional(), // Additional images for gallery view
-        text: z.string(),
         status: z.string().optional(), // Sold/Available
     }),
 });

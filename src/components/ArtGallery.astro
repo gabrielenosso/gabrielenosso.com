@@ -15,22 +15,18 @@ const { artItems } = Astro.props;
 
 <div id="softbox" class="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50 hidden">
   <div class="w-full h-full flex flex-col p-4">
-    <!-- Top bar with info and close button -->
-    <div class="flex justify-between items-start mb-4 text-white gap-6">
-      <!-- First column: Title, subtitle, medium, dimensions, year -->
-      <div class="flex flex-col gap-1 text-sm whitespace-nowrap">
-        <h2 class="font-bold text-base" id="softbox-name"></h2>
-        <p class="italic" id="softbox-subtitle"></p>
-        <p id="softbox-medium"></p>
-        <p id="softbox-dimensions"></p>
-        <p id="softbox-year"></p>
+    <!-- Info and close button in same row -->
+    <div class="flex justify-between items-start mb-2">
+      <!-- Centered info - 3 lines -->
+      <div class="flex-1 text-center text-white px-12">
+        <h2 class="font-bold text-xl" id="softbox-name"></h2>
+        <p class="italic text-base" id="softbox-subtitle"></p>
+        <p class="text-xs text-gray-400">
+          <span id="softbox-medium"></span> • <span id="softbox-dimensions"></span> • <span id="softbox-year"></span>
+        </p>
       </div>
-      
-      <!-- Second column: Description (takes remaining space) -->
-      <p class="flex-1 text-sm" id="softbox-text"></p>
-      
       <!-- Close button -->
-      <button class="text-3xl hover:opacity-75" id="softbox-close">&times;</button>
+      <button class="text-white text-5xl hover:opacity-75 leading-none ml-4" id="softbox-close">&times;</button>
     </div>
     
     <!-- Main image container - takes remaining space -->
@@ -55,7 +51,6 @@ const { artItems } = Astro.props;
     const medium = document.getElementById('softbox-medium');
     const dimensions = document.getElementById('softbox-dimensions');
     const year = document.getElementById('softbox-year');
-    const text = document.getElementById('softbox-text');
     const thumbnailContainer = document.getElementById('thumbnail-container');
 
     let currentGallery = [];
@@ -96,7 +91,6 @@ const { artItems } = Astro.props;
         medium.textContent = data.medium;
         dimensions.textContent = data.dimensions;
         year.textContent = data.year;
-        text.textContent = data.text;
         
         // Build thumbnails
         thumbnailContainer.innerHTML = '';
