@@ -41,6 +41,9 @@ const { artItems } = Astro.props;
 </div>
 
 <script>
+  // Configuration: Change this value to adjust the border width around the main image (in pixels)
+  const IMAGE_BORDER_WIDTH = 20; // Set to 0 for no border
+  
   document.addEventListener('DOMContentLoaded', () => {
     const images = document.querySelectorAll('.art-image');
     const softbox = document.getElementById('softbox');
@@ -52,6 +55,11 @@ const { artItems } = Astro.props;
     const dimensions = document.getElementById('softbox-dimensions');
     const year = document.getElementById('softbox-year');
     const thumbnailContainer = document.getElementById('thumbnail-container');
+
+    // Apply border to main image
+    if (IMAGE_BORDER_WIDTH > 0) {
+      img.style.border = `${IMAGE_BORDER_WIDTH}px solid white`;
+    }
 
     let currentGallery = [];
     let currentIndex = 0;
