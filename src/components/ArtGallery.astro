@@ -7,9 +7,7 @@ const { artItems } = Astro.props;
       <img src={art.data.heroImage} alt={art.data.name} class="w-full h-auto object-contain rounded shadow-lg cursor-pointer art-image" loading="lazy" data-art={JSON.stringify(art.data)} />
       <div class="mt-2">
         <h2 class="text-xl font-semibold">{art.data.name}</h2>
-        <p class="text-sm text-gray-500">{art.data.medium} • {art.data.year}/{art.data.month}</p>
-        <p class="text-md font-semibold">{art.data.status}</p>
- 
+        {art.data.subtitle && <p class="text-sm italic text-gray-500 dark:text-gray-400">{art.data.subtitle}</p>}
       </div>
     </div>
   ))}
@@ -18,20 +16,22 @@ const { artItems } = Astro.props;
 <div id="softbox" class="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50 hidden">
   <div class="w-full h-full flex flex-col p-4">
     <!-- Top bar with info and close button -->
-    <div class="flex justify-between items-start mb-4 text-white text-sm">
-      <div class="flex gap-6 flex-wrap">
-        <h2 class="font-bold" id="softbox-name"></h2>
-        <span id="softbox-medium"></span>
-        <span id="softbox-dimensions"></span>
-        <span id="softbox-date"></span>
-        <span id="softbox-author"></span>
-        <span id="softbox-status" class="font-semibold"></span>
+    <div class="flex justify-between items-start mb-4 text-white gap-6">
+      <!-- First column: Title, subtitle, medium, dimensions, year -->
+      <div class="flex flex-col gap-1 text-sm whitespace-nowrap">
+        <h2 class="font-bold text-base" id="softbox-name"></h2>
+        <p class="italic" id="softbox-subtitle"></p>
+        <p id="softbox-medium"></p>
+        <p id="softbox-dimensions"></p>
+        <p id="softbox-year"></p>
       </div>
-      <button class="text-3xl hover:opacity-75 ml-4" id="softbox-close">&times;</button>
+      
+      <!-- Second column: Description (takes remaining space) -->
+      <p class="flex-1 text-sm" id="softbox-text"></p>
+      
+      <!-- Close button -->
+      <button class="text-3xl hover:opacity-75" id="softbox-close">&times;</button>
     </div>
-    
-    <!-- Description text -->
-    <p class="text-white text-sm mb-4" id="softbox-text"></p>
     
     <!-- Main image container - takes remaining space -->
     <div class="flex-1 flex items-center justify-center mb-4 min-h-0">
@@ -51,12 +51,11 @@ const { artItems } = Astro.props;
     const closeBtn = document.getElementById('softbox-close');
     const img = document.getElementById('softbox-img');
     const name = document.getElementById('softbox-name');
+    const subtitle = document.getElementById('softbox-subtitle');
     const medium = document.getElementById('softbox-medium');
     const dimensions = document.getElementById('softbox-dimensions');
-    const date = document.getElementById('softbox-date');
-    const author = document.getElementById('softbox-author');
+    const year = document.getElementById('softbox-year');
     const text = document.getElementById('softbox-text');
-    const status = document.getElementById('softbox-status');
     const thumbnailContainer = document.getElementById('thumbnail-container');
 
     let currentGallery = [];
@@ -93,21 +92,11 @@ const { artItems } = Astro.props;
         img.src = currentGallery[0];
         img.alt = data.name;
         name.textContent = data.name;
+        subtitle.textContent = data.subtitle || '';
         medium.textContent = data.medium;
         dimensions.textContent = data.dimensions;
-        date.textContent = `${data.year}/${data.month}`;
-        author.textContent = data.author;
+        year.textContent = data.year;
         text.textContent = data.text;
-        
-        if (status) {
-          if (data.status) {
-            status.textContent = data.status;
-            status.style.display = '';
-          } else {
-            status.textContent = '';
-            status.style.display = 'none';
-          }
-        }
         
         // Build thumbnails
         thumbnailContainer.innerHTML = '';

@@ -1,13 +1,12 @@
 ---
-name: "Portrait of Bilbo"
-medium: "Oil painting"
-dimensions: "15x15 cm"
+name: "The Empty Bench for the One"
+subtitle: "On the love that didn't sit here"
+medium: "Acrylic on canvas"
+dimensions: "40 x 30 cm"
 year: 2025
-month: 6
 heroImage: "/bilbo.jpg"
 galleryImages:
   - "/canvas1_1.jpg"
   - "/canvas1_2.jpg"
-author: "Mago Arsaev"
-text: "Bilbo is my 5 year old cat, this a portrait of him i did on 15x15 cm gessoed HDF panel in oil paint."
+text: "This painting explores themes of absence and longing, capturing the empty space left by love that never came to be."
 ---
