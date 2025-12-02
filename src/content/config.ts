@@ -21,6 +21,7 @@ const art = defineCollection({
         year: z.number(),
         month: z.number(),
         heroImage: z.string(),
+        galleryImages: z.array(z.string()).optional(), // Additional images for gallery view
         author: z.string(),
         text: z.string(),
         status: z.string().optional(), // Sold/Available

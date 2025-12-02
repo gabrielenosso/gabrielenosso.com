@@ -15,20 +15,31 @@ const { artItems } = Astro.props;
   ))}
 </section>
 
-<div id="softbox" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 py-4 md:py-0 hidden">
-  <div class="bg-white dark:bg-neutral-900 rounded-lg shadow-2xl flex flex-col md:flex-row w-11/12 max-w-5xl overflow-auto" style="max-height: 95vh;">
-    <div class="md:w-3/4 w-full p-4 flex items-center justify-center">
-      <img id="softbox-img" src="" alt="" class="w-auto h-auto object-contain rounded" style="max-height: 90vh; max-width: 100%;" />
+<div id="softbox" class="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50 hidden">
+  <div class="w-full h-full flex flex-col p-4">
+    <!-- Top bar with info and close button -->
+    <div class="flex justify-between items-start mb-4 text-white text-sm">
+      <div class="flex gap-6 flex-wrap">
+        <h2 class="font-bold" id="softbox-name"></h2>
+        <span id="softbox-medium"></span>
+        <span id="softbox-dimensions"></span>
+        <span id="softbox-date"></span>
+        <span id="softbox-author"></span>
+        <span id="softbox-status" class="font-semibold"></span>
+      </div>
+      <button class="text-3xl hover:opacity-75 ml-4" id="softbox-close">&times;</button>
     </div>
-    <div class="md:w-1/4 w-full p-6 flex flex-col gap-2">
-      <button class="self-end text-2xl" id="softbox-close">&times;</button>
-      <h2 class="text-2xl font-bold mb-2" id="softbox-name"></h2>
-      <p><strong>Medium:</strong> <span id="softbox-medium"></span></p>
-      <p><strong>Dimensions:</strong> <span id="softbox-dimensions"></span></p>
-      <p><strong>Date:</strong> <span id="softbox-date"></span></p>
-      <p><strong>Author:</strong> <span id="softbox-author"></span></p>
-      <p id="softbox-status" class="font-semibold"></p>
-      <p class="mt-4" id="softbox-text"></p>
+    
+    <!-- Description text -->
+    <p class="text-white text-sm mb-4" id="softbox-text"></p>
+    
+    <!-- Main image container - takes remaining space -->
+    <div class="flex-1 flex items-center justify-center mb-4 min-h-0">
+      <img id="softbox-img" src="" alt="" class="max-w-full max-h-full object-contain" />
+    </div>
+    
+    <!-- Thumbnail gallery at bottom -->
+    <div id="thumbnail-container" class="flex gap-2 justify-center overflow-x-auto pb-2 hidden">
     </div>
   </div>
 </div>
@@ -46,11 +57,40 @@ const { artItems } = Astro.props;
     const author = document.getElementById('softbox-author');
     const text = document.getElementById('softbox-text');
     const status = document.getElementById('softbox-status');
+    const thumbnailContainer = document.getElementById('thumbnail-container');
+
+    let currentGallery = [];
+    let currentIndex = 0;
+
+    function updateImage(index) {
+      currentIndex = index;
+      img.src = currentGallery[currentIndex];
+      
+      // Update thumbnail active state
+      const thumbnails = thumbnailContainer.querySelectorAll('img');
+      thumbnails.forEach((thumb, i) => {
+        if (i === currentIndex) {
+          thumb.classList.add('ring-4', 'ring-white');
+          thumb.classList.remove('opacity-60');
+        } else {
+          thumb.classList.remove('ring-4', 'ring-white');
+          thumb.classList.add('opacity-60');
+        }
+      });
+    }
 
     images.forEach(image => {
       image.onclick = () => {
         const data = JSON.parse(image.getAttribute('data-art'));
-        img.src = data.heroImage;
+        
+        // Build gallery array: heroImage first, then galleryImages
+        currentGallery = [data.heroImage];
+        if (data.galleryImages && data.galleryImages.length > 0) {
+          currentGallery = currentGallery.concat(data.galleryImages);
+        }
+        currentIndex = 0;
+        
+        img.src = currentGallery[0];
         img.alt = data.name;
         name.textContent = data.name;
         medium.textContent = data.medium;
@@ -58,6 +98,7 @@ const { artItems } = Astro.props;
         date.textContent = `${data.year}/${data.month}`;
         author.textContent = data.author;
         text.textContent = data.text;
+        
         if (status) {
           if (data.status) {
             status.textContent = data.status;
@@ -67,19 +108,53 @@ const { artItems } = Astro.props;
             status.style.display = 'none';
           }
         }
+        
+        // Build thumbnails
+        thumbnailContainer.innerHTML = '';
+        if (currentGallery.length > 1) {
+          currentGallery.forEach((imgSrc, index) => {
+            const thumb = document.createElement('img');
+            thumb.src = imgSrc;
+            thumb.className = 'h-20 w-auto object-cover cursor-pointer rounded transition-all hover:opacity-100';
+            if (index === 0) {
+              thumb.classList.add('ring-4', 'ring-white');
+            } else {
+              thumb.classList.add('opacity-60');
+            }
+            thumb.onclick = () => updateImage(index);
+            thumbnailContainer.appendChild(thumb);
+          });
+          thumbnailContainer.classList.remove('hidden');
+        } else {
+          thumbnailContainer.classList.add('hidden');
+        }
+        
         softbox.classList.remove('hidden');
       };
     });
+
     closeBtn.onclick = () => {
       softbox.classList.add('hidden');
     };
-    // Close softbox if click away
-    if (softbox) {
-      softbox.addEventListener('click', (e) => {
-        if (e.target === softbox) {
+    
+    // Close softbox if click on background
+    softbox.addEventListener('click', (e) => {
+      if (e.target === softbox) {
+        softbox.classList.add('hidden');
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (!softbox.classList.contains('hidden')) {
+        if (e.key === 'ArrowLeft' && currentIndex > 0) {
+          updateImage(currentIndex - 1);
+        } else if (e.key === 'ArrowRight' && currentIndex < currentGallery.length - 1) {
+          updateImage(currentIndex + 1);
+        } else if (e.key === 'Escape') {
           softbox.classList.add('hidden');
         }
-      });
-    }
+      }
+    });
   });
 </script>
