@@ -1,0 +1,7 @@
+# robots.txt for gabrielenosso.com
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://gabrielenosso.com/sitemap-index.xml

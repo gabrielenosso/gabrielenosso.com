@@ -2,4 +2,4 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = 'Gabriele Nosso';
-export const SITE_DESCRIPTION = 'Empathy on Canvas'
+export const SITE_DESCRIPTION = 'Made for those who seek emotion, not decoration.'

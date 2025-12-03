@@ -6,7 +6,7 @@ import tailwind from '@astrojs/tailwind'
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://arsaev.github.io/art-void',
+    site: 'https://gabrielenosso.com',
     integrations: [mdx(), sitemap(), tailwind()],
     markdown: {
         shikiConfig: {

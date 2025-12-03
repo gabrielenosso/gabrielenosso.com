@@ -38,6 +38,11 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
 
+<!-- Additional SEO -->
+<meta name="author" content="Gabriele Nosso" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+
 <script is:inline>
     const theme = (() => {
     if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
