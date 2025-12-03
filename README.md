@@ -8,7 +8,12 @@ npm run dev
 ```
 
 
-## Build
+## Build & Deploy
+```bash
+npm run publish
+```
+
+#### Only build:
 ```bash
 npm run build
 ```
@@ -16,6 +21,10 @@ npm run build
 Then for local testing:
 ```bash
 npx serve ./dist
+```
+#### Only deploy:
+```bash
+npm run deploy
 ```
 
 
