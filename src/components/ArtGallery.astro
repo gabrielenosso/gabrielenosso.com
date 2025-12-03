@@ -7,7 +7,7 @@ const { artItems } = Astro.props;
       <img src={art.data.heroImage} alt={art.data.name} class="w-full h-auto object-contain shadow-lg cursor-pointer art-image" loading="lazy" data-art={JSON.stringify(art.data)} />
       <div class="mt-2">
         <h2 class="text-xl font-semibold">{art.data.name}</h2>
-        {art.data.subtitle && <p class="text-sm italic text-gray-500 dark:text-gray-400">{art.data.subtitle}</p>}
+        {art.data.subtitle && <p class="text-sm italic text-light-blue">{art.data.subtitle}</p>}
       </div>
     </div>
   ))}
@@ -21,7 +21,7 @@ const { artItems } = Astro.props;
       <div class="flex-1 text-center text-white px-12">
         <h2 class="font-bold text-xl" id="softbox-name"></h2>
         <p class="italic text-base" id="softbox-subtitle"></p>
-        <p class="text-xs text-gray-400">
+        <p class="text-xs text-light-blue">
           <span id="softbox-medium"></span> • <span id="softbox-dimensions"></span> • <span id="softbox-year"></span>
         </p>
       </div>

@@ -1,18 +1,41 @@
 html {
     font-family: 'Reddit Mono', monospace;
     width: 100%;
+    background-color: #0a1628;
+    color: #ffffff;
+}
+
+body {
+    background-color: #0a1628;
+    color: #ffffff;
 }
 
 a {
-    color: inherit;
+    color: #6b9bd1;
     text-decoration: none;
 }
 
 a:hover {
+    color: #d4af37;
     text-decoration: underline;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
 }
 
 img {
     max-width: 100%;
     height: auto;
+    display: block;
+    margin: 20px 0;
+}
+
+.text-gold {
+    background: linear-gradient(135deg, #d4af37 0%, #ffd700 50%, #d4af37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gold-shimmer {
+    color: #d4af37;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.6), 0 0 20px rgba(255, 215, 0, 0.4);
 }

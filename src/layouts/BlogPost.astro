@@ -14,7 +14,7 @@ const { title, description, pubDate, heroImage, tags } = Astro.props;
   <head>
     <BaseHead title={title} description={description} />
   </head>
-  <body class="w-full max-w-screen-xl mx-auto my-4 px-4 dark:bg-neutral-800 dark:text-neutral-300 transition-colors duration-300">
+  <body class="w-full max-w-screen-xl mx-auto my-4 px-4 bg-night-blue text-white transition-colors duration-300">
     <Header />
     <main>
       <article class="">
@@ -68,9 +68,9 @@ blockquote {
     border-left: 4px solid #ccc;
     padding: 10px 20px;
     margin: 20px 0;
-    color: #666;
-    background-color: #f9f9f9;
-    @apply dark:bg-neutral-700 text-white border-l-4 border-neutral-500; 
+    color: #6b9bd1;
+    background-color: rgba(107, 155, 209, 0.1);
+    @apply text-white border-l-4 border-light-blue; 
 }
 
 /* Code Blocks and Inline Code */
@@ -101,8 +101,8 @@ th, td {
 }
 
 th {
-    background-color: #f4f4f4;
-    @apply dark:bg-neutral-700;
+    background-color: rgba(107, 155, 209, 0.2);
+    @apply bg-light-blue bg-opacity-20;
 }
 
 /* Lists */
