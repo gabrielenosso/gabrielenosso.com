@@ -7,6 +7,27 @@ npm i
 npm run dev
 ```
 
+
+## Build
+```bash
+npm run build
+```
+
+Then for local testing:
+```bash
+npx serve ./dist
+```
+
+
+## Deployment
+Copy the file example.env to .env and fill in your FTP credentials.
+
+Then run:
+```bash
+npm run deploy
+```
+
+
 ## Colors Pictures
 
 To crop transparent backgrounds from PNG images in the colors folder:
@@ -20,6 +41,7 @@ python crop_transparent.py
 ```
 
 This will automatically process all PNG files in `public/colors/` and remove transparent padding.
+
 
 ## Credits
 This project was builds on top of [void-astro](https://github.com/eAntillon/void-astro) by Erick Antillón(s)
