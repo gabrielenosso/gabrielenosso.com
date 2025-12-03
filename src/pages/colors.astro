@@ -4,10 +4,58 @@ import Layout from '../layouts/BlogPost.astro';
 
 <Layout
   title="Colors"
-  description="Exploring the palette of emotions through color."
+  description="The palette of emotions that shape my artistic voice."
   heroImage=""
 >
-  <p>
-    Colors page content coming soon...
-  </p>
+  <div class="prose dark:prose-invert max-w-none">
+    <p class="text-lg mb-12">
+      I paint with only a few colors because in restraint, I find truth. A limited palette forces me to see deeper, to express more with less, to discover that the full spectrum of human emotion doesn't need every color — it needs the right ones.
+    </p>
+
+    <div class="space-y-8">
+      <!-- Blues -->
+      <div class="flex flex-col md:flex-row gap-0 md:gap-6 items-start">
+        <div class="w-48 md:w-1/3 overflow-hidden flex items-start flex-shrink-0">
+          <img src="/colors/blues.png" alt="Blues" class="w-full h-auto object-contain object-top !m-0" />
+        </div>
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold mb-0 md:mb-3">Blues</h2>
+          <p>The color of distance and depth, of longing and the quiet ache of introspection. Blue is the space between what is said and what is felt, holding the vastness of unspoken thoughts. I use its entire spectrum — from the palest whisper of sky to the deepest indigo of night — embracing all its moods and meanings.</p>
+        </div>
+      </div>
+
+      <!-- Gold -->
+      <div class="flex flex-col md:flex-row gap-0 md:gap-6 items-start">
+        <div class="w-48 md:w-1/3 overflow-hidden flex items-start flex-shrink-0">
+          <img src="/colors/gold.png" alt="Gold" class="w-full h-auto object-contain object-top !m-0" />
+        </div>
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold mb-0 md:mb-3">Gold</h2>
+          <p>A spark in darkness. Hope caught in light. Not the gold of excess, but of illumination — the divine glimpsed in the ordinary, the belief that beauty persists even in sorrow.</p>
+        </div>
+      </div>
+
+      <!-- White -->
+      <div class="flex flex-col md:flex-row gap-0 md:gap-6 items-start">
+        <div class="w-48 md:w-1/3 overflow-hidden flex items-start flex-shrink-0">
+          <img src="/colors/white.png" alt="White" class="w-full h-auto object-contain object-top !m-0" />
+        </div>
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold mb-0 md:mb-3">White</h2>
+          <p>Emptiness that is full. Silence that speaks. White is the pause that gives all else meaning, the absence that creates presence. It is both surrender and possibility.</p>
+        </div>
+      </div>
+
+      <!-- Brown -->
+      <div class="flex flex-col md:flex-row gap-0 md:gap-6 items-start">
+        <div class="w-48 md:w-1/3 overflow-hidden flex items-start flex-shrink-0">
+          <img src="/colors/brown.png" alt="Brown" class="w-full h-auto object-contain object-top !m-0" />
+        </div>
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold mb-0 md:mb-3">Brown</h2>
+          <p>Earth and roots. The warmth of memory worn smooth by time. Brown grounds the ethereal in the weight of what is real, reminding us we are made of dust and return to it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </Layout>
