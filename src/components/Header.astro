@@ -9,32 +9,7 @@ import HeaderLink from "./HeaderLink.astro";
       <li class="flex items-center"><HeaderLink href="/">Art</HeaderLink></li>
       <li class="flex items-center"><HeaderLink href="/me">Me</HeaderLink></li>
       <li class="flex items-center"><HeaderLink href="/colors">Colors</HeaderLink></li>
-      <li class="flex items-center">
-        <a href="#" id="contact-link" class="nav-link">Contact</a>
-      </li>
+      <li class="flex items-center"><HeaderLink href="/contact">Contact</HeaderLink></li>
     </ul>
   </div>
 </header>
-
-<style>
-  .nav-link {
-    display: inline-block;
-    text-decoration: none;
-    color: #d4af37;
-  }
-</style>
-
-<script>
-  const c = document.getElementById('contact-link');
-  if (c) {
-    const e = 'tnoevryrabffb@tznvy.pbz';
-    const d = (s: string) => s.replace(/[a-zA-Z]/g, (ch) => {
-      const b = ch <= 'Z' ? 65 : 97;
-      return String.fromCharCode(((ch.charCodeAt(0) - b + 13) % 26) + b);
-    });
-    c.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      window.location.href = ['m','a','i','l','t','o',':'].join('') + d(e);
-    });
-  }
-</script>
