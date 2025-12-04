@@ -30,18 +30,24 @@ async function uploadDirectory(client: Client, localDir: string, remoteDir: stri
 
   for (const entry of entries) {
     const localPath = join(localDir, entry.name);
-    const remotePath = `${remoteDir}/${entry.name}`;
+    // Use relative path from current FTP directory (use . for root)
+    const remotePath = remoteDir === '.' 
+      ? entry.name 
+      : `${remoteDir}/${entry.name}`;
 
     if (entry.isDirectory()) {
       console.log(`📁 Creating directory: ${remotePath}`);
       try {
         await client.ensureDir(remotePath);
+        await client.cd('/');  // Reset to root after ensureDir changes cwd
+        await client.cd(REMOTE_DIR);  // Go back to our target directory
       } catch (err) {
         console.log(`   Directory may already exist, continuing...`);
       }
       await uploadDirectory(client, localPath, remotePath);
     } else {
-      console.log(`📤 Uploading: ${localPath} -> ${remotePath}`);
+      const displayLocal = localPath.replace(/\\/g, '/');
+      console.log(`📤 Uploading: ${displayLocal} -> ${remotePath}`);
       await client.uploadFrom(localPath, remotePath);
     }
   }
@@ -62,12 +68,35 @@ async function deploy() {
       secure: false,
     });
 
+    // Use passive mode (required by many shared hosting providers)
+    client.ftp.socket.setTimeout(30000);
+
     console.log('✅ Connected to FTP server');
     
+    // Debug: show current directory and list its contents
+    const pwd = await client.pwd();
+    console.log(`📍 Current FTP directory: ${pwd}`);
+    
+    const rootList = await client.list();
+    console.log('📋 Root directory contents:');
+    for (const item of rootList) {
+      const type = item.isDirectory ? '📁' : '📄';
+      console.log(`   ${type} ${item.name}`);
+    }
+
+    // Ensure remote base directory exists and cd into it
+    try {
+      await client.cd(REMOTE_DIR);
+      console.log(`📍 Changed to: ${await client.pwd()}`);
+    } catch (err) {
+      console.log(`❌ Could not cd to ${REMOTE_DIR}`);
+      throw err;
+    }
+    
     if (DEBUG) {
-      console.log(`🔍 DEBUG MODE: Listing contents of ${REMOTE_DIR}...`);
-      const list = await client.list(REMOTE_DIR);
-      console.log('\n📋 Remote directory contents:');
+      console.log(`🔍 DEBUG MODE: Listing contents...`);
+      const list = await client.list();
+      console.log('\n📋 Directory contents:');
       for (const item of list) {
         const type = item.isDirectory ? '📁' : '📄';
         console.log(`${type} ${item.name} (${item.size} bytes)`);
@@ -75,7 +104,8 @@ async function deploy() {
       console.log('\n⚠️  No files were uploaded (DEBUG=true)');
     } else {
       console.log(`📂 Uploading ${LOCAL_DIR} to ${REMOTE_DIR}...`);
-      await uploadDirectory(client, LOCAL_DIR, REMOTE_DIR);
+      // Upload starting from current directory (.)
+      await uploadDirectory(client, LOCAL_DIR, '.');
       console.log('✅ Deployment complete!');
     }
 
