@@ -1,5 +1,6 @@
 <?php
-$pass = 'art2025';
+require_once __DIR__ . '/config.php';
+$pass = $ANALYTICS_PASSWORD;
 session_start();
 
 if (isset($_POST['p']) && $_POST['p'] === $pass) $_SESSION['ok'] = 1;
