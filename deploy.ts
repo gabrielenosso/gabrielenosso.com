@@ -8,7 +8,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // Set to true to list remote directory contents instead of uploading
-const DEBUG = true;
+const DEBUG = false;
 
 const FTP_HOST = process.env.FTP_HOST;
 const FTP_PORT = parseInt(process.env.FTP_PORT || '21');

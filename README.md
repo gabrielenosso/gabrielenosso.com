@@ -1,3 +1,16 @@
+## Manage Paintings
+Add a new .md file in `src/content/art/`.
+In the .md file, `heroImage` is the main image, and `galleryImages` are additional images.
+Paintings are shown in alphabetical order.
+
+Run script to resize and rename extension of canvases pictures with:
+```python
+python optimize_images.py
+```
+
+Copy paste the end of the logs and put the list of images in the .md file.
+
+
 ## Development
 
 ```bash
