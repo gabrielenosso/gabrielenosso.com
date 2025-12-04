@@ -8,6 +8,11 @@ const { artItems } = Astro.props;
       <div class="mt-2">
         <h2 class="text-xl font-semibold">{art.data.name}</h2>
         {art.data.subtitle && <p class="text-sm italic text-light-blue">{art.data.subtitle}</p>}
+        <p class="text-xs text-gray-400 mt-1">
+          {art.data.dimensions}
+          <span class="mx-2">•</span>
+          <a href="#" class="text-gold hover:underline view-details" data-art={JSON.stringify(art.data)}>View details</a>
+        </p>
       </div>
     </div>
   ))}
@@ -81,46 +86,55 @@ const { artItems } = Astro.props;
       });
     }
 
+    function openSoftbox(data) {
+      currentGallery = [data.heroImage];
+      if (data.galleryImages && data.galleryImages.length > 0) {
+        currentGallery = currentGallery.concat(data.galleryImages);
+      }
+      currentIndex = 0;
+      
+      img.src = currentGallery[0];
+      img.alt = data.name;
+      name.textContent = data.name;
+      subtitle.textContent = data.subtitle || '';
+      medium.textContent = data.medium;
+      dimensions.textContent = data.dimensions;
+      year.textContent = data.year;
+      
+      thumbnailContainer.innerHTML = '';
+      if (currentGallery.length > 1) {
+        currentGallery.forEach((imgSrc, index) => {
+          const thumb = document.createElement('img');
+          thumb.src = imgSrc;
+          thumb.className = 'h-20 w-auto object-cover cursor-pointer hover:opacity-100';
+          if (index === 0) {
+            thumb.classList.add('border-4', 'border-white');
+          } else {
+            thumb.classList.add('opacity-60');
+          }
+          thumb.onclick = () => updateImage(index);
+          thumbnailContainer.appendChild(thumb);
+        });
+        thumbnailContainer.classList.remove('hidden');
+      } else {
+        thumbnailContainer.classList.add('hidden');
+      }
+      
+      softbox.classList.remove('hidden');
+    }
+
     images.forEach(image => {
       image.onclick = () => {
         const data = JSON.parse(image.getAttribute('data-art'));
-        
-        // Build gallery array: heroImage first, then galleryImages
-        currentGallery = [data.heroImage];
-        if (data.galleryImages && data.galleryImages.length > 0) {
-          currentGallery = currentGallery.concat(data.galleryImages);
-        }
-        currentIndex = 0;
-        
-        img.src = currentGallery[0];
-        img.alt = data.name;
-        name.textContent = data.name;
-        subtitle.textContent = data.subtitle || '';
-        medium.textContent = data.medium;
-        dimensions.textContent = data.dimensions;
-        year.textContent = data.year;
-        
-        // Build thumbnails
-        thumbnailContainer.innerHTML = '';
-        if (currentGallery.length > 1) {
-          currentGallery.forEach((imgSrc, index) => {
-            const thumb = document.createElement('img');
-            thumb.src = imgSrc;
-            thumb.className = 'h-20 w-auto object-cover cursor-pointer hover:opacity-100';
-            if (index === 0) {
-              thumb.classList.add('border-4', 'border-white');
-            } else {
-              thumb.classList.add('opacity-60');
-            }
-            thumb.onclick = () => updateImage(index);
-            thumbnailContainer.appendChild(thumb);
-          });
-          thumbnailContainer.classList.remove('hidden');
-        } else {
-          thumbnailContainer.classList.add('hidden');
-        }
-        
-        softbox.classList.remove('hidden');
+        openSoftbox(data);
+      };
+    });
+
+    document.querySelectorAll('.view-details').forEach(link => {
+      link.onclick = (e) => {
+        e.preventDefault();
+        const data = JSON.parse(link.getAttribute('data-art'));
+        openSoftbox(data);
       };
     });
 
@@ -147,5 +161,27 @@ const { artItems } = Astro.props;
         }
       }
     });
+
+    // Touch swipe navigation
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const minSwipeDistance = 50;
+
+    img.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    img.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const swipeDistance = touchEndX - touchStartX;
+      
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        if (swipeDistance < 0 && currentIndex < currentGallery.length - 1) {
+          updateImage(currentIndex + 1);
+        } else if (swipeDistance > 0 && currentIndex > 0) {
+          updateImage(currentIndex - 1);
+        }
+      }
+    }, { passive: true });
   });
 </script>
