@@ -60,6 +60,26 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
     document.documentElement.classList.add("dark");
   }
   window.localStorage.setItem("theme", theme);
+</script>
 
-
-  </script>
+<!-- Privacy-friendly analytics (no cookies, no consent needed) -->
+<script is:inline>
+  (function() {
+    // Don't track if Do Not Track is enabled
+    if (navigator.doNotTrack === '1') return;
+    
+    // Send analytics data
+    var data = new FormData();
+    data.append('page', window.location.pathname);
+    data.append('referrer', document.referrer || '');
+    data.append('screen', window.innerWidth.toString());
+    
+    // Use sendBeacon for reliable delivery (doesn't block page unload)
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/analytics/track.php', data);
+    } else {
+      // Fallback for older browsers
+      fetch('/analytics/track.php', { method: 'POST', body: data });
+    }
+  })();
+</script>
