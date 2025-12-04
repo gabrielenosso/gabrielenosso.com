@@ -23,15 +23,15 @@ const { artItems } = Astro.props;
     <!-- Info and close button in same row -->
     <div class="flex justify-between items-start mb-2">
       <!-- Centered info - 3 lines -->
-      <div class="flex-1 text-center text-white px-12">
-        <h2 class="font-bold text-xl" id="softbox-name"></h2>
-        <p class="italic text-base" id="softbox-subtitle"></p>
+      <div class="flex-1 text-center text-white px-2 md:px-12">
+        <h2 class="font-bold text-lg md:text-xl" id="softbox-name"></h2>
+        <p class="italic text-sm md:text-base" id="softbox-subtitle"></p>
         <p class="text-xs text-light-blue">
           <span id="softbox-medium"></span> • <span id="softbox-dimensions"></span> • <span id="softbox-year"></span>
         </p>
       </div>
       <!-- Close button -->
-      <button class="text-white text-5xl hover:opacity-75 leading-none ml-4" id="softbox-close">&times;</button>
+      <button class="text-gold text-4xl md:text-5xl hover:opacity-75 leading-none ml-2 md:ml-4" id="softbox-close">&times;</button>
     </div>
     
     <!-- Main image container - takes remaining space -->
@@ -121,7 +121,20 @@ const { artItems } = Astro.props;
       }
       
       softbox.classList.remove('hidden');
+      // Push state so back button closes popup instead of navigating
+      history.pushState({ softboxOpen: true }, '');
     }
+
+    function closeSoftbox() {
+      softbox.classList.add('hidden');
+    }
+
+    // Handle browser back button
+    window.addEventListener('popstate', (e) => {
+      if (!softbox.classList.contains('hidden')) {
+        closeSoftbox();
+      }
+    });
 
     images.forEach(image => {
       image.onclick = () => {
@@ -139,13 +152,13 @@ const { artItems } = Astro.props;
     });
 
     closeBtn.onclick = () => {
-      softbox.classList.add('hidden');
+      history.back(); // This triggers popstate which calls closeSoftbox
     };
     
     // Close softbox if click on background
     softbox.addEventListener('click', (e) => {
       if (e.target === softbox || e.target.classList.contains('softbox-content')) {
-        softbox.classList.add('hidden');
+        history.back(); // This triggers popstate which calls closeSoftbox
       }
     });
 
@@ -157,7 +170,7 @@ const { artItems } = Astro.props;
         } else if (e.key === 'ArrowRight' && currentIndex < currentGallery.length - 1) {
           updateImage(currentIndex + 1);
         } else if (e.key === 'Escape') {
-          softbox.classList.add('hidden');
+          history.back(); // This triggers popstate which calls closeSoftbox
         }
       }
     });
