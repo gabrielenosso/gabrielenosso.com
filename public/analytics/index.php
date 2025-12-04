@@ -48,10 +48,11 @@ foreach ($files as $file) {
     $count = count($lines);
     $total += $count;
     
-    // Count countries and languages
+    // Count countries, languages, and unique visitors
     $countries = array();
     $languages = array();
     $pages = array();
+    $visitors = array();
     $entries = array();
     foreach ($lines as $line) {
         $d = json_decode($line, true);
@@ -60,15 +61,18 @@ foreach ($files as $file) {
         $c = isset($d['c']) ? $d['c'] : '?';
         $l = isset($d['l']) ? $d['l'] : '?';
         $pg = isset($d['p']) ? $d['p'] : '/';
+        $vid = isset($d['v']) ? $d['v'] : 'unknown';
         $countries[$c] = isset($countries[$c]) ? $countries[$c] + 1 : 1;
         $languages[$l] = isset($languages[$l]) ? $languages[$l] + 1 : 1;
         $pages[$pg] = isset($pages[$pg]) ? $pages[$pg] + 1 : 1;
+        $visitors[$vid] = 1;
     }
     arsort($countries);
     arsort($languages);
     arsort($pages);
+    $uniqueCount = count($visitors);
     
-    echo "<h2>📅 $month <span style='color:#d4af37'>($count views)</span></h2>";
+    echo "<h2>📅 $month <span style='color:#d4af37'>($count views / $uniqueCount visitors)</span></h2>";
     
     echo '<p>🌍 <b>Countries:</b> ';
     foreach (array_slice($countries, 0, 5, true) as $k => $v) echo "<span class='stat'><b>$v</b> $k</span>";
@@ -96,7 +100,7 @@ foreach ($files as $file) {
 if ($total == 0) {
     echo '<p style="color:#888">No data yet. Visit the site to start tracking!</p>';
 }
-echo "<p class='total'>📊 Total: $total views</p>";
+echo "<p class='total'>📊 Total: $total page views</p>";
 ?>
 </body>
 </html>
