@@ -50,7 +50,9 @@ foreach ($files as $file) {
     
     // Count countries, languages, and unique visitors
     $countries = array();
+    $countriesByVisitor = array();
     $languages = array();
+    $langsByVisitor = array();
     $pages = array();
     $visitors = array();
     $entries = array();
@@ -65,21 +67,28 @@ foreach ($files as $file) {
         $countries[$c] = isset($countries[$c]) ? $countries[$c] + 1 : 1;
         $languages[$l] = isset($languages[$l]) ? $languages[$l] + 1 : 1;
         $pages[$pg] = isset($pages[$pg]) ? $pages[$pg] + 1 : 1;
-        $visitors[$vid] = 1;
+        // Track unique visitors and their country/language
+        if (!isset($visitors[$vid])) {
+            $visitors[$vid] = 1;
+            $countriesByVisitor[$c] = isset($countriesByVisitor[$c]) ? $countriesByVisitor[$c] + 1 : 1;
+            $langsByVisitor[$l] = isset($langsByVisitor[$l]) ? $langsByVisitor[$l] + 1 : 1;
+        }
     }
     arsort($countries);
+    arsort($countriesByVisitor);
     arsort($languages);
+    arsort($langsByVisitor);
     arsort($pages);
     $uniqueCount = count($visitors);
     
     echo "<h2>📅 $month <span style='color:#d4af37'>($count views / $uniqueCount visitors)</span></h2>";
     
     echo '<p>🌍 <b>Countries:</b> ';
-    foreach (array_slice($countries, 0, 5, true) as $k => $v) echo "<span class='stat'><b>$v</b> $k</span>";
+    foreach (array_slice($countriesByVisitor, 0, 5, true) as $k => $v) echo "<span class='stat'><b>$v</b> $k</span>";
     echo '</p>';
     
     echo '<p>🗣️ <b>Languages:</b> ';
-    foreach (array_slice($languages, 0, 5, true) as $k => $v) echo "<span class='stat'><b>$v</b> $k</span>";
+    foreach (array_slice($langsByVisitor, 0, 5, true) as $k => $v) echo "<span class='stat'><b>$v</b> $k</span>";
     echo '</p>';
     
     echo '<p>📄 <b>Pages:</b> ';
