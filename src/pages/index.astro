@@ -7,9 +7,15 @@ import { getCollection } from 'astro:content';
 import ArtGallery from '../components/ArtGallery.astro';
 const artItems = await getCollection('art');
 
-function slugify(str) {
-  return str ? str.toLowerCase().replace(/\s+/g, '-') : '';
+function slugify(str: string): string {
+  return str ? str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '';
 }
+
+// Add slug to each art item
+artItems.forEach(item => {
+  (item.data as any).slug = slugify(item.data.name);
+});
+
 const selectedMedium = 'All';
 const mediums = Array.from(new Set(artItems.map(a => a.data.medium).filter(Boolean)));
 mediums.unshift('All');
@@ -21,12 +27,15 @@ artItems.sort((a, b) => {
 
 // short by 20 most recent
 artItems.splice(20);
+
+// Use first artwork image as OG image, or a default
+const ogImage = artItems.length > 0 ? artItems[0].data.heroImage : '/me.png';
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} image={ogImage} />
   </head>
   <body class="w-full max-w-screen-xl mx-auto my-4 px-4 bg-night-blue text-white transition-colors duration-300" >
     <Header />

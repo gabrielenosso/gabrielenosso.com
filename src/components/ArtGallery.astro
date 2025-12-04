@@ -68,6 +68,7 @@ const { artItems } = Astro.props;
 
     let currentGallery = [];
     let currentIndex = 0;
+    let currentSlug = '';
 
     function updateImage(index) {
       currentIndex = index;
@@ -86,12 +87,13 @@ const { artItems } = Astro.props;
       });
     }
 
-    function openSoftbox(data) {
+    function openSoftbox(data, updateUrl = true) {
       currentGallery = [data.heroImage];
       if (data.galleryImages && data.galleryImages.length > 0) {
         currentGallery = currentGallery.concat(data.galleryImages);
       }
       currentIndex = 0;
+      currentSlug = data.slug || '';
       
       img.src = currentGallery[0];
       img.alt = data.name;
@@ -121,20 +123,55 @@ const { artItems } = Astro.props;
       }
       
       softbox.classList.remove('hidden');
-      // Push state so back button closes popup instead of navigating
-      history.pushState({ softboxOpen: true }, '');
+      
+      // Update URL hash for shareable links
+      if (updateUrl && currentSlug) {
+        history.pushState({ softboxOpen: true, slug: currentSlug }, '', '#art=' + currentSlug);
+      } else {
+        history.pushState({ softboxOpen: true }, '');
+      }
     }
 
     function closeSoftbox() {
       softbox.classList.add('hidden');
+      // Remove hash from URL
+      if (window.location.hash) {
+        history.pushState({}, '', window.location.pathname);
+      }
     }
 
     // Handle browser back button
     window.addEventListener('popstate', (e) => {
+      // Check if we should open an artwork from hash
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#art=')) {
+        const slug = hash.replace('#art=', '');
+        const artImage = document.querySelector(`.art-image[data-art*='"slug":"${slug}"']`);
+        if (artImage) {
+          const data = JSON.parse(artImage.getAttribute('data-art'));
+          openSoftbox(data, false);
+          return;
+        }
+      }
+      // Otherwise close if open
       if (!softbox.classList.contains('hidden')) {
-        closeSoftbox();
+        softbox.classList.add('hidden');
       }
     });
+
+    // Check URL hash on page load to open artwork directly
+    function checkHashOnLoad() {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#art=')) {
+        const slug = hash.replace('#art=', '');
+        const artImage = document.querySelector(`.art-image[data-art*='"slug":"${slug}"']`);
+        if (artImage) {
+          const data = JSON.parse(artImage.getAttribute('data-art'));
+          openSoftbox(data, false);
+        }
+      }
+    }
+    checkHashOnLoad();
 
     images.forEach(image => {
       image.onclick = () => {
@@ -152,13 +189,13 @@ const { artItems } = Astro.props;
     });
 
     closeBtn.onclick = () => {
-      history.back(); // This triggers popstate which calls closeSoftbox
+      closeSoftbox();
     };
     
     // Close softbox if click on background
     softbox.addEventListener('click', (e) => {
       if (e.target === softbox || e.target.classList.contains('softbox-content')) {
-        history.back(); // This triggers popstate which calls closeSoftbox
+        closeSoftbox();
       }
     });
 
@@ -170,7 +207,7 @@ const { artItems } = Astro.props;
         } else if (e.key === 'ArrowRight' && currentIndex < currentGallery.length - 1) {
           updateImage(currentIndex + 1);
         } else if (e.key === 'Escape') {
-          history.back(); // This triggers popstate which calls closeSoftbox
+          closeSoftbox();
         }
       }
     });
