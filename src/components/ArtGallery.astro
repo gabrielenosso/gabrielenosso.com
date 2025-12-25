@@ -18,30 +18,40 @@ const { artItems } = Astro.props;
   ))}
 </section>
 
-<div id="softbox" class="fixed inset-0 flex items-center justify-center z-50 hidden" style="background-color: rgba(5, 12, 25, 0.98);">
-  <div class="w-full h-full flex flex-col p-4 softbox-content">
-    <!-- Info and close button in same row -->
-    <div class="flex justify-between items-start mb-2">
-      <!-- Centered info - 3 lines -->
-      <div class="flex-1 text-center text-white px-2 md:px-12">
-        <h2 class="font-bold text-lg md:text-xl" id="softbox-name"></h2>
-        <p class="italic text-sm md:text-base" id="softbox-subtitle"></p>
-        <p class="text-xs text-light-blue">
-          <span id="softbox-medium"></span> • <span id="softbox-dimensions"></span> • <span id="softbox-year"></span>
-        </p>
-      </div>
-      <!-- Close button -->
-      <button class="text-gold text-4xl md:text-5xl hover:opacity-75 leading-none ml-2 md:ml-4" id="softbox-close">&times;</button>
-    </div>
-    
-    <!-- Main image container - takes remaining space -->
-    <div class="flex-1 flex items-center justify-center mb-4 min-h-0 softbox-content">
+<div id="softbox" class="fixed inset-0 z-50 hidden overflow-y-auto" style="background-color: rgba(5, 12, 25, 0.98);">
+  
+  <!-- Close button - only on desktop, top of right column -->
+  <button class="hidden lg:block fixed top-2 right-4 text-gold text-5xl hover:opacity-75 leading-none z-10" id="softbox-close">&times;</button>
+  
+  <!-- Left column: FIXED position, doesn't scroll -->
+  <div class="hidden lg:flex lg:fixed lg:left-0 lg:top-0 lg:w-3/4 lg:h-full flex-col p-4">
+    <!-- Main image container -->
+    <div class="flex-1 flex items-center justify-center min-h-0">
       <img id="softbox-img" src="" alt="" class="max-w-full max-h-full object-contain" />
     </div>
     
-    <!-- Thumbnail gallery at bottom -->
-    <div id="thumbnail-container" class="flex gap-2 justify-start md:justify-center overflow-x-auto pb-2 px-2 hidden" style="scroll-snap-type: x mandatory;">
+    <!-- Thumbnail gallery -->
+    <div id="thumbnail-container" class="flex gap-2 justify-center overflow-x-auto py-2 px-2 hidden flex-shrink-0" style="scroll-snap-type: x mandatory;">
     </div>
+  </div>
+  
+  <!-- Mobile: Image at top (scrolls with page) -->
+  <div class="lg:hidden px-2">
+    <img id="softbox-img-mobile" src="" alt="" class="max-w-full object-contain mx-auto block" />
+    <div id="thumbnail-container-mobile" class="flex gap-2 justify-start overflow-x-auto mt-1 hidden" style="scroll-snap-type: x mandatory;">
+    </div>
+  </div>
+  
+  <!-- Right column: Title/Description - scrolls with browser -->
+  <div class="px-4 pt-2 pb-4 lg:p-4 lg:ml-[75%]">
+    <div>
+      <h2 class="text-xl font-semibold text-white" id="softbox-name"></h2>
+      <p class="text-sm italic text-light-blue" id="softbox-subtitle"></p>
+      <p class="text-xs text-gray-400 mt-1 mb-4">
+        <span id="softbox-medium"></span> • <span id="softbox-dimensions"></span> • <span id="softbox-year"></span>
+      </p>
+    </div>
+    <p id="softbox-description" class="text-white text-sm leading-relaxed text-justify hidden"></p>
   </div>
 </div>
 
@@ -54,16 +64,21 @@ const { artItems } = Astro.props;
     const softbox = document.getElementById('softbox');
     const closeBtn = document.getElementById('softbox-close');
     const img = document.getElementById('softbox-img');
+    const imgMobile = document.getElementById('softbox-img-mobile');
     const name = document.getElementById('softbox-name');
     const subtitle = document.getElementById('softbox-subtitle');
     const medium = document.getElementById('softbox-medium');
     const dimensions = document.getElementById('softbox-dimensions');
     const year = document.getElementById('softbox-year');
     const thumbnailContainer = document.getElementById('thumbnail-container');
+    const thumbnailContainerMobile = document.getElementById('thumbnail-container-mobile');
+    const description = document.getElementById('softbox-description');
 
-    // Apply border to main image
+    // Apply border to main image (desktop only)
     if (IMAGE_BORDER_WIDTH > 0) {
       img.style.border = `${IMAGE_BORDER_WIDTH}px solid white`;
+      // Smaller border on mobile
+      imgMobile.style.border = `8px solid white`;
     }
 
     let currentGallery = [];
@@ -73,17 +88,20 @@ const { artItems } = Astro.props;
     function updateImage(index) {
       currentIndex = index;
       img.src = currentGallery[currentIndex];
+      imgMobile.src = currentGallery[currentIndex];
       
-      // Update thumbnail active state
-      const thumbnails = thumbnailContainer.querySelectorAll('img');
-      thumbnails.forEach((thumb, i) => {
-        if (i === currentIndex) {
-          thumb.classList.add('border-4', 'border-white');
-          thumb.classList.remove('opacity-60');
-        } else {
-          thumb.classList.remove('border-4', 'border-white');
-          thumb.classList.add('opacity-60');
-        }
+      // Update thumbnail active state (both containers)
+      [thumbnailContainer, thumbnailContainerMobile].forEach(container => {
+        const thumbnails = container.querySelectorAll('img');
+        thumbnails.forEach((thumb, i) => {
+          if (i === currentIndex) {
+            thumb.classList.add('border-4', 'border-white');
+            thumb.classList.remove('opacity-60');
+          } else {
+            thumb.classList.remove('border-4', 'border-white');
+            thumb.classList.add('opacity-60');
+          }
+        });
       });
     }
 
@@ -97,15 +115,28 @@ const { artItems } = Astro.props;
       
       img.src = currentGallery[0];
       img.alt = data.name;
+      imgMobile.src = currentGallery[0];
+      imgMobile.alt = data.name;
       name.textContent = data.name;
       subtitle.textContent = data.subtitle || '';
       medium.textContent = data.medium;
       dimensions.textContent = data.dimensions;
       year.textContent = data.year;
       
+      // Handle description
+      if (data.description) {
+        description.textContent = data.description;
+        description.classList.remove('hidden');
+      } else {
+        description.classList.add('hidden');
+      }
+      
+      // Build thumbnails for both desktop and mobile
       thumbnailContainer.innerHTML = '';
+      thumbnailContainerMobile.innerHTML = '';
       if (currentGallery.length > 1) {
         currentGallery.forEach((imgSrc, index) => {
+          // Desktop thumbnail
           const thumb = document.createElement('img');
           thumb.src = imgSrc;
           thumb.className = 'h-20 w-auto object-cover cursor-pointer hover:opacity-100';
@@ -116,13 +147,28 @@ const { artItems } = Astro.props;
           }
           thumb.onclick = () => updateImage(index);
           thumbnailContainer.appendChild(thumb);
+          
+          // Mobile thumbnail
+          const thumbMobile = document.createElement('img');
+          thumbMobile.src = imgSrc;
+          thumbMobile.className = 'h-16 w-auto object-cover cursor-pointer hover:opacity-100';
+          if (index === 0) {
+            thumbMobile.classList.add('border-4', 'border-white');
+          } else {
+            thumbMobile.classList.add('opacity-60');
+          }
+          thumbMobile.onclick = () => updateImage(index);
+          thumbnailContainerMobile.appendChild(thumbMobile);
         });
         thumbnailContainer.classList.remove('hidden');
+        thumbnailContainerMobile.classList.remove('hidden');
       } else {
         thumbnailContainer.classList.add('hidden');
+        thumbnailContainerMobile.classList.add('hidden');
       }
       
       softbox.classList.remove('hidden');
+      document.body.style.overflow = 'hidden'; // Hide body scrollbar
       
       // Update URL hash for shareable links
       if (updateUrl && currentSlug) {
@@ -134,6 +180,7 @@ const { artItems } = Astro.props;
 
     function closeSoftbox() {
       softbox.classList.add('hidden');
+      document.body.style.overflow = ''; // Restore body scrollbar
       // Remove hash from URL
       if (window.location.hash) {
         history.pushState({}, '', window.location.pathname);
@@ -217,11 +264,30 @@ const { artItems } = Astro.props;
     let touchEndX = 0;
     const minSwipeDistance = 50;
 
+    // Desktop image touch
     img.addEventListener('touchstart', (e) => {
       touchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
 
     img.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const swipeDistance = touchEndX - touchStartX;
+      
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        if (swipeDistance < 0 && currentIndex < currentGallery.length - 1) {
+          updateImage(currentIndex + 1);
+        } else if (swipeDistance > 0 && currentIndex > 0) {
+          updateImage(currentIndex - 1);
+        }
+      }
+    }, { passive: true });
+
+    // Mobile image touch
+    imgMobile.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    imgMobile.addEventListener('touchend', (e) => {
       touchEndX = e.changedTouches[0].screenX;
       const swipeDistance = touchEndX - touchStartX;
       

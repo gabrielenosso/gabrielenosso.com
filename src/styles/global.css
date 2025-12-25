@@ -25,7 +25,18 @@ img {
     max-width: 100%;
     height: auto;
     display: block;
+}
+
+img:not(#softbox-img):not(#softbox-img-mobile):not([id^="thumbnail"]) {
     margin: 20px 0;
+}
+
+#softbox-img-mobile {
+    margin: 4px 0;
+}
+
+#thumbnail-container-mobile {
+    margin: 4px 0;
 }
 
 .text-gold {

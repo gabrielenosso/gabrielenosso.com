@@ -17,6 +17,7 @@ const art = defineCollection({
     schema: z.object({
         name: z.string(),
         subtitle: z.string().optional(),
+        description: z.string().optional(),
         medium: z.string(),
         dimensions: z.string(),
         year: z.number(),
