@@ -1,15 +1,17 @@
 ---
 name: "The Empty Bench for the One"
 subtitle: "On the love that didn't sit here"
-description: "This painting captures a moment of profound solitude and reflection. The empty bench stands as a silent monument to absence—a place where conversations never happened, where hands never touched, where two souls never sat side by side watching the world go by.
+description: "The Empty Bench is a scene you understand before you even think about it.
 
-The warm golden tones of the autumn light cast long shadows across the scene, suggesting the passage of time and the fleeting nature of opportunity. The bench itself, weathered by seasons of waiting, tells its own story of patience and hope unfulfilled.
+A bench is made for two. Everyone has that image in their head: two people close, sharing silence, leaning into each other like the world is finally calm. Here, that place is empty. Not “nobody sat there today” empty. It’s the kind of empty that feels wrong, like something that belongs to you has been taken away and the shape of it is still there.
 
-In creating this piece, I wanted to explore the peculiar weight of spaces that remain unoccupied—how an empty chair at a table, an unused pillow on a bed, or a solitary bench in a park can speak volumes about longing and loss. These are the quiet monuments we build to the loves that never were.
+The tree above holds many leaves, and they’re like the people we meet in life. Some mattered, some passed, all of them left a trace. But one leaf is different. The gold one. That’s the one person you don’t replace. The one your heart keeps naming even when you try to move on.
 
-The composition draws the eye to the center of the bench, that sacred middle ground where two people might have met in the middle, compromising, sharing, being. Instead, we find only light and shadow, dancing together in the space where human connection might have bloomed.
+And the worst part is: it’s not on the bench. It’s there, but far. Close enough to see, too far to touch.
 
-This work is part of my ongoing exploration of emotional landscapes—physical spaces imbued with psychological depth. The bench becomes more than furniture; it transforms into a meditation on what we wait for, what we hope for, and what we must eventually learn to release."
+Still… there’s that tiny, irrational thing we call hope. A strong wind, coming from the right direction, could make that gold leaf fall. The chance is small, almost unfairly small. But if it did fall, it could land where it should have always been: on the bench, beside you.
+
+This painting is about what’s missing, what remains, and that fragile, stubborn hope that life might still turn in the right direction. Just once."
 medium: "Acrylic on canvas"
 dimensions: "40 x 30 cm"
 year: 2025
